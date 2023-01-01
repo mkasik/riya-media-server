@@ -28,6 +28,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const dataCollection = client.db('media').collection('post-data');
+        const commentCollection = client.db('media').collection('comment');
 
 
 
@@ -39,6 +40,17 @@ async function run() {
         app.get('/post-data', async (req, res) => {
             const query = {}
             const cursor = dataCollection.find(query);
+            const data = await cursor.toArray();
+            res.send(data);
+        });
+        app.post('/comment', async (req, res) => {
+            const data = req.body;
+            const result = await commentCollection.insertOne(data);
+            res.send(result);
+        });
+        app.get('/comment', async (req, res) => {
+            const query = {}
+            const cursor = commentCollection.find(query);
             const data = await cursor.toArray();
             res.send(data);
         });
